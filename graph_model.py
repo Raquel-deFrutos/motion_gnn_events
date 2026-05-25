@@ -36,7 +36,10 @@ class MVSECGraphDataset(torch.utils.data.Dataset):
         edge_index = torch.tensor(data_np["edge_index"], dtype=torch.long)
         edge_attr = torch.tensor(data_np["edge_attr"], dtype=torch.float32)
 
-        flow_path = f"C:\\Users\\Raquel\\Documents\\Doct\\Algoritmo\\MVSEC\\outdoor_day1\\optical_flow\\flow_{get_idx(self.graph_files[idx]):010d}.npy"
+        ##local
+        # flow_path = f"C:\\Users\\Raquel\\Documents\\Doct\\Algoritmo\\MVSEC\\outdoor_day1\\optical_flow\\flow_{get_idx(self.graph_files[idx]):010d}.npy"
+        #server
+        flow_path = "/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/optical_flow"
         flow = np.load(flow_path).astype(np.float32)  # (2,H,W)
 
         flow_vec = torch.tensor([
@@ -179,8 +182,16 @@ def main():
     # --------------------------
     # PATHS
     # --------------------------
-    graph_dir = r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\outdoor_day1\davis\left\events\nodes/*.npz"
-    gt_csv = r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\outdoor_day1/gt_aligned.csv"
+    #local
+    # graph_dir = r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\outdoor_day1\davis\left\events\nodes/*.npz"
+    #server
+    graph_dir ="/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/nodes"
+    
+    #local
+    # gt_csv = r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\outdoor_day1/gt_aligned.csv"
+    #server
+    gt_csv = "/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/gt_aligned.csv"
+    
 
     # LOAD FILES
     graph_files_raw = glob.glob(graph_dir)
