@@ -264,10 +264,12 @@ def main():
     # num_workers=0
     # )
 
+    print("ANTES DATASET")
     train_dataset = MVSECGraphDataset(
         graph_files[:split],
         gt_norm[:split]
     )
+    print("DATASET OK")
 
     val_dataset = MVSECGraphDataset(
         graph_files[split:],
@@ -282,6 +284,7 @@ def main():
         num_workers=0,      # 👈 clave
         pin_memory=False
     )
+    print("LOADER OK")
 
     val_loader = DataLoader(
         val_dataset,
@@ -295,7 +298,7 @@ def main():
 
     
     data = next(iter(train_loader))
-
+    print("FIRST BATCH OK")
 
     # --------------------------
     # MODEL
