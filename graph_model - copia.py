@@ -30,7 +30,7 @@ class MVSECGraphDataset(torch.utils.data.Dataset):
         return len(self.graph_files)
 
     def __getitem__(self, idx):
-        data_np = self.data_cache[idx]
+        data_np = np.load(self.graph_files[idx], allow_pickle=False)
 
         x = torch.tensor(data_np["feats"], dtype=torch.float32)
         edge_index = torch.tensor(data_np["edge_index"], dtype=torch.long)
