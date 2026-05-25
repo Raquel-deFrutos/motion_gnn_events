@@ -190,7 +190,7 @@ def main():
     #local
     # gt_csv = r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\outdoor_day1/gt_aligned.csv"
     #server
-    gt_csv = "/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/gt_aligned.csv"
+    gt_csv = "/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/gt/gt_aligned.csv"
     
 
     # LOAD FILES
