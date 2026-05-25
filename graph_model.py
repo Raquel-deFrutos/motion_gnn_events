@@ -194,7 +194,8 @@ def main():
     
 
     # LOAD FILES
-    graph_files_raw = glob.glob(graph_dir)
+    # graph_files_raw = glob.glob(graph_dir)
+    graph_files_raw = glob.glob(os.path.join(graph_dir, "*.npz"))
 
     # índice -> archivo
     graph_dict = {get_idx(p): p for p in graph_files_raw}
