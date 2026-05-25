@@ -39,7 +39,7 @@ class MVSECGraphDataset(torch.utils.data.Dataset):
         ##local
         # flow_path = f"C:\\Users\\Raquel\\Documents\\Doct\\Algoritmo\\MVSEC\\outdoor_day1\\optical_flow\\flow_{get_idx(self.graph_files[idx]):010d}.npy"
         #server
-        flow_path = "/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/optical_flow"
+        flow_path = f"/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/optical_flow/flow_{get_idx(self.graph_files[idx]):010d}.npy"
         flow = np.load(flow_path).astype(np.float32)  # (2,H,W)
 
         flow_vec = torch.tensor([
