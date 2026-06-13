@@ -341,9 +341,9 @@ def main():
             #     print("GT norm:", data.y[0])
 
             flow_gt = data.y_flow
-            print("BEFORE MODEL")
+            # print("BEFORE MODEL")
             pred = model(data.x, data.edge_index, data.edge_attr, data.batch)
-            print("AFTER MODEL")
+            # print("AFTER MODEL")
 
             # # DEBUG
             # if epoch == 0 and i == 0:
