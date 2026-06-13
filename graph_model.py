@@ -31,8 +31,8 @@ class MVSECGraphDataset(torch.utils.data.Dataset):
 
     def __getitem__(self, idx):
         data_np = np.load(self.graph_files[idx], allow_pickle=True)
-        print(self.graph_files[idx])
-        print(data_np.files)
+        # print(self.graph_files[idx])
+        # print(data_np.files)
 
         x = torch.tensor(data_np["feats"], dtype=torch.float32)
         edge_index = torch.tensor(data_np["edge_index"], dtype=torch.long)
@@ -277,6 +277,10 @@ def main():
         graph_files[split:],
         gt_norm[split:]
     )
+    
+    print("TEST SINGLE ITEM")
+    _ = train_dataset[0]
+    print("OK SINGLE ITEM")
 
     train_loader = DataLoader(
         train_dataset,
@@ -296,11 +300,12 @@ def main():
         num_workers=2,
         pin_memory=False
     )
-    
-
-    
     data = next(iter(train_loader))
     print("FIRST BATCH OK")
+
+    
+    # data = next(iter(train_loader))
+    # print("FIRST BATCH OK")
 
     # --------------------------
     # MODEL
