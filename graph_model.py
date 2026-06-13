@@ -330,20 +330,21 @@ def main():
         train_loss = 0
 
         for i, data in enumerate(train_loader):
-            
+
             if i == 0:
                 print("FIRST BATCH EPOCH", epoch)
 
+            print("DEVICE:", device)
+            print("X device before:", data.x.device)
+
             data = data.to(device)
 
-            # # DEBUG
-            # if epoch == 0 and i == 0:
-            #     print("GT norm:", data.y[0])
+            print("X device after:", data.x.device)
 
             flow_gt = data.y_flow
-            # print("BEFORE MODEL")
+    
             pred = model(data.x, data.edge_index, data.edge_attr, data.batch)
-            # print("AFTER MODEL")
+         
 
             # # DEBUG
             # if epoch == 0 and i == 0:
