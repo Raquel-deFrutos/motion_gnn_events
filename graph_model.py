@@ -346,14 +346,17 @@ def main():
             flow_gt = data.y_flow
     
             start = time.time()
+            print("ANTES MODEL")
             pred = model(data.x, data.edge_index, data.edge_attr, data.batch)
+            print("DESPUES MODEL")
             # print("MODEL TIME:", time.time() - start)
 
             # # DEBUG
             # if epoch == 0 and i == 0:
             #     print("PRED:", pred[0].detach().cpu())
-
+            print("ANTES LOSS")
             loss_ego = loss_fn(pred, data.y)
+            print("DESPUES LOSS")
 
             flow_pred = ego_to_flow(pred)
 
@@ -363,9 +366,12 @@ def main():
             loss = loss_ego
 
             opt.zero_grad()
+            print("ANTES BACKWARD")
             loss.backward()
+            print("DESPUES BACKWARD")
+            print("ANTES STEP")
             opt.step()
-
+            print("DESPUES STEP")
             train_loss += loss.item()
 
         train_loss /= len(train_loader)
