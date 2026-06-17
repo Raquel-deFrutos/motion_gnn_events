@@ -354,7 +354,7 @@ def main():
         train_loss = 0
 
         for i, data in enumerate(train_loader):
-
+            print(f"BATCH {i}")
             if i == 0:
                 print("FIRST BATCH EPOCH", epoch)
 
@@ -362,6 +362,8 @@ def main():
             # print("X device before:", data.x.device)
 
             data = data.to(device)
+            print("  nodes:", data.x.shape[0])
+            print("  edges:", data.edge_index.shape[1])
 
             # print("X device after:", data.x.device)
 
