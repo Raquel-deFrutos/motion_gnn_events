@@ -5,6 +5,7 @@ import pandas as pd
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import time
 
 from torch_geometric.data import Data, Batch
 from torch.utils.data import DataLoader
@@ -38,7 +39,7 @@ class MVSECGraphDataset(torch.utils.data.Dataset):
         edge_index = torch.tensor(data_np["edge_index"], dtype=torch.long)
         edge_attr = torch.tensor(data_np["edge_attr"], dtype=torch.float32)
 
-        ##local
+        # ##local
         # flow_path = f"C:\\Users\\Raquel\\Documents\\Doct\\Algoritmo\\MVSEC\\outdoor_day1\\optical_flow\\flow_{get_idx(self.graph_files[idx]):010d}.npy"
         #server
         flow_path = f"/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/optical_flow/flow_{get_idx(self.graph_files[idx]):010d}.npy"
@@ -184,10 +185,13 @@ def main():
     # --------------------------
     # PATHS
     # --------------------------
-    #local
+    # #local
     # graph_dir = r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\outdoor_day1\davis\left\events\nodes/*.npz"
+    # graph_files_raw = glob.glob(graph_dir)
     #server
-    graph_dir ="/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/nodes/nodes"
+    graph_dir ="/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/nodes/nodes/*.npz"
+    graph_files_raw = glob.glob(graph_dir)
+    # graph_files_raw = glob.glob(os.path.join(graph_dir, "*.npz"))
     
     #local
     # gt_csv = r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\outdoor_day1/gt_aligned.csv"
@@ -195,9 +199,7 @@ def main():
     gt_csv = "/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/gt/gt_aligned.csv"
     
 
-    # LOAD FILES
-    # graph_files_raw = glob.glob(graph_dir)
-    graph_files_raw = glob.glob(os.path.join(graph_dir, "*.npz"))
+
 
     # índice -> archivo
     graph_dict = {get_idx(p): p for p in graph_files_raw}
@@ -334,17 +336,18 @@ def main():
             if i == 0:
                 print("FIRST BATCH EPOCH", epoch)
 
-            print("DEVICE:", device)
-            print("X device before:", data.x.device)
+            # print("DEVICE:", device)
+            # print("X device before:", data.x.device)
 
             data = data.to(device)
 
-            print("X device after:", data.x.device)
+            # print("X device after:", data.x.device)
 
             flow_gt = data.y_flow
     
+            start = time.time()
             pred = model(data.x, data.edge_index, data.edge_attr, data.batch)
-         
+            # print("MODEL TIME:", time.time() - start)
 
             # # DEBUG
             # if epoch == 0 and i == 0:
