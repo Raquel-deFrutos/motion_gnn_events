@@ -334,8 +334,8 @@ def main():
     # --------------------------
     # MODEL
     # --------------------------
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
+    # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cpu")
     model = EgoMotionGNN().to(device)
     opt = torch.optim.Adam(model.parameters(), lr = 3e-4)
     
