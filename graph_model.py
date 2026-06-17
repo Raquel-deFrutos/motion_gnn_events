@@ -1,8 +1,14 @@
 import os
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+os.environ["NUMEXPR_NUM_THREADS"] = "1"
 import glob
 import numpy as np
 import pandas as pd
 import torch
+torch.set_num_threads(1)
+torch.set_num_interop_threads(1)
 import torch.nn as nn
 import torch.nn.functional as F
 import time
@@ -10,7 +16,7 @@ import time
 from torch_geometric.data import Data, Batch
 from torch.utils.data import DataLoader
 from torch_geometric.nn import MessagePassing, global_mean_pool
-torch.set_num_threads(os.cpu_count())
+# torch.set_num_threads(os.cpu_count())
 import warnings
 warnings.filterwarnings("ignore", message="CUDA initialization")
 from torch_geometric.nn.aggr import AttentionalAggregation
@@ -284,24 +290,40 @@ def main():
     _ = train_dataset[0]
     print("OK SINGLE ITEM")
 
+    # train_loader = DataLoader(
+    #     train_dataset,
+    #     batch_size=16,
+    #     shuffle=True,
+    #     collate_fn=collate_fn,
+    #     num_workers=0,      # 👈 clave
+    #     pin_memory=False
+    # )
     train_loader = DataLoader(
-        train_dataset,
-        batch_size=16,
-        shuffle=True,
-        collate_fn=collate_fn,
-        num_workers=0,      # 👈 clave
-        pin_memory=False
+    train_dataset,
+    batch_size=16,
+    shuffle=True,
+    collate_fn=collate_fn,
+    num_workers=0,   # ya correcto
     )
     print("LOADER OK")
 
+    # val_loader = DataLoader(
+    #     val_dataset,
+    #     batch_size=16,
+    #     shuffle=False,
+    #     collate_fn=collate_fn,
+    #     num_workers=2,
+    #     pin_memory=False
+    # )
     val_loader = DataLoader(
-        val_dataset,
-        batch_size=16,
-        shuffle=False,
-        collate_fn=collate_fn,
-        num_workers=2,
-        pin_memory=False
+    val_dataset,
+    batch_size=16,
+    shuffle=False,
+    collate_fn=collate_fn,
+    num_workers=0,   # cámbialo a 0 también
     )
+    
+    
     data = next(iter(train_loader))
     print("FIRST BATCH OK")
 
