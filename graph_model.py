@@ -1,4 +1,4 @@
-import os
+import os, psutil
 os.environ["OMP_NUM_THREADS"] = "1"
 os.environ["MKL_NUM_THREADS"] = "1"
 os.environ["OPENBLAS_NUM_THREADS"] = "1"
@@ -334,8 +334,16 @@ def main():
     # --------------------------
     # MODEL
     # --------------------------
-    # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    device = torch.device("cpu")
+    
+    #server
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(device)
+    
+    print(torch.cuda.is_available())
+    print(torch.cuda.get_device_name(0))
+
+    #local
+    # device = torch.device("cpu")
     model = EgoMotionGNN().to(device)
     opt = torch.optim.Adam(model.parameters(), lr = 3e-4)
     
