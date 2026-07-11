@@ -367,8 +367,8 @@ def main():
             # print("X device before:", data.x.device)
 
             data = data.to(device)
-            print("  nodes:", data.x.shape[0])
-            print("  edges:", data.edge_index.shape[1])
+            # print("  nodes:", data.x.shape[0])
+            # print("  edges:", data.edge_index.shape[1])
 
             # print("X device after:", data.x.device)
 
