@@ -350,7 +350,7 @@ def main():
     # --------------------------
     # TRAINING
     # --------------------------
-    EPOCHS = 10
+    EPOCHS = 50
 
     best_val = float("inf") 
 
