@@ -356,12 +356,10 @@ def main():
 
     for epoch in range(EPOCHS):
         model.train()
-        print("START EPOCH", epoch)
         train_loss = 0
 
         for i, data in enumerate(train_loader):
-            if i == 0:
-                print("FIRST BATCH EPOCH", epoch)
+
 
             # print("DEVICE:", device)
             # print("X device before:", data.x.device)
