@@ -355,7 +355,7 @@ def main():
     # --------------------------
     # TRAINING
     # --------------------------
-    EPOCHS = 50
+    EPOCHS = 10
 
     best_val = float("inf") 
 
@@ -412,8 +412,11 @@ def main():
         # ----------------------
         model.eval()
         val_loss = 0
-
+        
         with torch.no_grad():
+
+            component_errors = []
+
             for i, data in enumerate(val_loader):
 
                 if data is None:
@@ -421,23 +424,69 @@ def main():
 
                 data = data.to(device)
 
-                pred = model(data.x, data.edge_index, data.edge_attr, data.batch)
+                pred = model(
+                    data.x,
+                    data.edge_index,
+                    data.edge_attr,
+                    data.batch
+                )
 
-                # SOLO 1 BATCH
-                if i == 0:
-                    # print("\nPRED[0]:", pred[0].detach().cpu().numpy())
-                    # print("GT[0]:  ", data.y[0].detach().cpu().numpy())
+                # =========================
+                # ERROR POR COMPONENTE
+                # =========================
+                error = torch.abs(pred - data.y)
 
-                    pred_denorm = pred[0].detach().cpu().numpy() * std + mean
-                    gt_denorm = data.y[0].detach().cpu().numpy() * std + mean
+                component_errors.append(
+                    error.cpu().numpy()
+                )
 
-                    # print("\nPRED REAL:", pred_denorm)
-                    # print("GT REAL:  ", gt_denorm)
 
                 loss_ego = loss_fn(pred, data.y)
                 val_loss += loss_ego.item()
 
+        # with torch.no_grad():
+        #     for i, data in enumerate(val_loader):
+
+        #         if data is None:
+        #             continue
+
+        #         data = data.to(device)
+
+        #         pred = model(data.x, data.edge_index, data.edge_attr, data.batch)
+
+        #         # SOLO 1 BATCH
+        #         if i == 0:
+        #             # print("\nPRED[0]:", pred[0].detach().cpu().numpy())
+        #             # print("GT[0]:  ", data.y[0].detach().cpu().numpy())
+
+        #             pred_denorm = pred[0].detach().cpu().numpy() * std + mean
+        #             gt_denorm = data.y[0].detach().cpu().numpy() * std + mean
+
+        #             # print("\nPRED REAL:", pred_denorm)
+        #             # print("GT REAL:  ", gt_denorm)
+
+        #         loss_ego = loss_fn(pred, data.y)
+        #         val_loss += loss_ego.item()
+
         val_loss /= len(val_loader)
+        
+        # =========================
+        # MAE POR COMPONENTE
+        # =========================
+        component_errors = np.concatenate(component_errors, axis=0)
+
+        mae_components = component_errors.mean(axis=0)
+
+        print(
+            "MAE:",
+            f"Tx={mae_components[0]:.3f}",
+            f"Ty={mae_components[1]:.3f}",
+            f"Tz={mae_components[2]:.3f}",
+            f"wx={mae_components[3]:.3f}",
+            f"wy={mae_components[4]:.3f}",
+            f"wz={mae_components[5]:.3f}",
+        )
+                
 
         print(f"Epoch {epoch:03d} | Train: {train_loss:.4f} | Val: {val_loss:.4f}")
         
