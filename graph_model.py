@@ -195,7 +195,7 @@ def main():
     # graph_dir = r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\outdoor_day1\davis\left\events\nodes/*.npz"
     # graph_files_raw = glob.glob(graph_dir)
     #server
-    graph_dir ="/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/nodes/nodes/*.npz"
+    graph_dir ="/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/nodes2/nodes/*.npz"
     graph_files_raw = glob.glob(graph_dir)
     # graph_files_raw = glob.glob(os.path.join(graph_dir, "*.npz"))
     
