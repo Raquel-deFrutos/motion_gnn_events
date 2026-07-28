@@ -124,7 +124,9 @@ class SimpleGNNLayer(MessagePassing):
 from torch_geometric.nn import GlobalAttention, MessagePassing
 
 class EgoMotionGNN(nn.Module):
-    def __init__(self, node_dim=10, edge_dim=6, hidden=64):
+    # def __init__(self, node_dim=10, edge_dim=6, hidden=64):
+    ##nodes2
+    def __init__(self, node_dim=16, edge_dim=6, hidden=64):
         super().__init__()
 
         self.gnn1 = SimpleGNNLayer(node_dim, edge_dim, hidden)
@@ -195,6 +197,9 @@ def main():
     # graph_dir = r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\outdoor_day1\davis\left\events\nodes/*.npz"
     # graph_files_raw = glob.glob(graph_dir)
     #server
+    #nodes1
+    # graph_dir ="/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/nodes/nodes/*.npz"
+    #nodes2
     graph_dir ="/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/nodes2/nodes/*.npz"
     graph_files_raw = glob.glob(graph_dir)
     # graph_files_raw = glob.glob(os.path.join(graph_dir, "*.npz"))
