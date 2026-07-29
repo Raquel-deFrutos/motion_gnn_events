@@ -272,6 +272,19 @@ def build_nodes(events, H, W, cell_size=8):
         xs_c = xs_c[order]
         ys_c = ys_c[order]
         ts_c = ts_c[order]
+        
+        if len(ts_c) > 2:
+            A = np.vstack([ts_c, np.ones_like(ts_c)]).T
+
+            vx, _ = np.linalg.lstsq(A, xs_c, rcond=None)[0]
+            vy, _ = np.linalg.lstsq(A, ys_c, rcond=None)[0]
+
+            # normalización
+            vx = vx * t_range / W
+            vy = vy * t_range / H
+        else:
+            vx = 0.0
+            vy = 0.0
 
         # dt = (ts_c[-1] - ts_c[0]) + 1e-6
 
@@ -299,7 +312,7 @@ def build_nodes(events, H, W, cell_size=8):
         dt_cell = (ts_c[-1] - ts_c[0]) / t_range
 
         pol_mean = ps[idxs].mean()
-        # event_rate = np.log1p(num_events / (dt_cell + 1e-6))
+        event_rate = np.log1p(num_events / (dt_cell + 1e-6))
 
         node_feat = [
             num_events_norm,
@@ -313,8 +326,11 @@ def build_nodes(events, H, W, cell_size=8):
             hist[1],
             hist[2],
             dt_cell,
+            event_rate
             pos_ratio,
-            pol_mean
+            pol_mean,
+            vx,
+            vy
         ]
 
         feats.append(node_feat)
@@ -387,7 +403,7 @@ def build_graph(coords, k=8, alpha_t=2.0):
     
 
 def generate_nodes():
-    NODE_FEAT_DIM = 16
+    NODE_FEAT_DIM = 19
     node_dir = EVENTS_OUT_DIR / "nodes2"
     node_dir.mkdir(parents=True, exist_ok=True)
 
