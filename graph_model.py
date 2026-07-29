@@ -244,6 +244,9 @@ def main():
 
     mean = train_gt.mean(axis=0)
     std = train_gt.std(axis=0) + 1e-6
+    
+    print("GT mean:", np.round(mean, 3))
+    print("GT std :", np.round(std, 3))
 
     gt_norm = (gt - mean) / std
     # print("GT mean:", gt_norm.mean(0))
@@ -430,6 +433,17 @@ def main():
                     data.edge_attr,
                     data.batch
                 )
+                
+                pred_denorm = pred.cpu().numpy() * std + mean
+                gt_denorm = data.y.cpu().numpy() * std + mean
+
+                if epoch == 0 and i == 0:
+                    print("\nPrimeras predicciones:")
+                    for k in range(min(5, len(pred_denorm))):
+                        print("Pred:", np.round(pred_denorm[k], 3))
+                        print("GT:  ", np.round(gt_denorm[k], 3))
+                        print()
+
 
                 # =========================
                 # ERROR POR COMPONENTE
@@ -444,29 +458,6 @@ def main():
                 loss_ego = loss_fn(pred, data.y)
                 val_loss += loss_ego.item()
 
-        # with torch.no_grad():
-        #     for i, data in enumerate(val_loader):
-
-        #         if data is None:
-        #             continue
-
-        #         data = data.to(device)
-
-        #         pred = model(data.x, data.edge_index, data.edge_attr, data.batch)
-
-        #         # SOLO 1 BATCH
-        #         if i == 0:
-        #             # print("\nPRED[0]:", pred[0].detach().cpu().numpy())
-        #             # print("GT[0]:  ", data.y[0].detach().cpu().numpy())
-
-        #             pred_denorm = pred[0].detach().cpu().numpy() * std + mean
-        #             gt_denorm = data.y[0].detach().cpu().numpy() * std + mean
-
-        #             # print("\nPRED REAL:", pred_denorm)
-        #             # print("GT REAL:  ", gt_denorm)
-
-        #         loss_ego = loss_fn(pred, data.y)
-        #         val_loss += loss_ego.item()
 
         val_loss /= len(val_loader)
         
