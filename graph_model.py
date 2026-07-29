@@ -331,6 +331,13 @@ def main():
     
     
     data = next(iter(train_loader))
+    print("Número de nodos:", data.x.shape[0])
+    print("Número de grafos:", data.num_graphs)
+    print("Nodos por grafo:")
+
+    for g in range(data.num_graphs):
+        n = (data.batch == g).sum().item()
+        print(f"Grafo {g}: {n} nodos")
 
 
     
