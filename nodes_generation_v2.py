@@ -326,7 +326,7 @@ def build_nodes(events, H, W, cell_size=8):
             hist[1],
             hist[2],
             dt_cell,
-            event_rate
+            event_rate,
             pos_ratio,
             pol_mean,
             vx,
