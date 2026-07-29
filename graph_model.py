@@ -99,6 +99,7 @@ class SimpleGNNLayer(MessagePassing):
             nn.ReLU(),
             nn.Linear(hidden, hidden)
         )
+        self.bn = nn.BatchNorm1d(hidden)
 
         # 👇 PROYECCIÓN para residual
         self.res_proj = nn.Linear(node_dim, hidden) if node_dim != hidden else nn.Identity()
@@ -113,9 +114,13 @@ class SimpleGNNLayer(MessagePassing):
         return self.edge_mlp(msg)
 
     def update(self, aggr_out, x):
+
         out = self.node_mlp(torch.cat([x, aggr_out], dim=-1))
 
-        # residual correcto
+        out = self.bn(out)
+        out = F.relu(out)
+        out = self.dropout(out)
+
         x_res = self.res_proj(x)
 
         return out + x_res
@@ -146,7 +151,7 @@ class EgoMotionGNN(nn.Module):
         self.head = nn.Sequential(
             nn.Linear(hidden, hidden),
             nn.ReLU(),
-            nn.Dropout(0.1),
+            nn.Dropout(0.3),
             nn.Linear(hidden, 6)
         )
 
@@ -358,7 +363,11 @@ def main():
     #local
     # device = torch.device("cpu")
     model = EgoMotionGNN().to(device)
-    opt = torch.optim.Adam(model.parameters(), lr = 3e-4)
+    opt = torch.optim.Adam(
+    model.parameters(),
+    lr=3e-4,
+    weight_decay=1e-4
+        )
     
 
 
