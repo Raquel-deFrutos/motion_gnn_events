@@ -221,7 +221,7 @@ def build_nodes(events, H, W, cell_size=8):
         coords: (M, 3)  -> x,y,t
     """
     if len(events) == 0:
-        return np.zeros((0, 13), dtype=np.float32), np.zeros((0, 3), dtype=np.float32)
+        return np.zeros((0, 16), dtype=np.float32), np.zeros((0, 3), dtype=np.float32)
     
     xs = events[:, 0].astype(np.float32)
     ys = events[:, 1].astype(np.float32)
@@ -279,9 +279,10 @@ def build_nodes(events, H, W, cell_size=8):
             vx, _ = np.linalg.lstsq(A, xs_c, rcond=None)[0]
             vy, _ = np.linalg.lstsq(A, ys_c, rcond=None)[0]
 
+            dt_local = ts_c[-1] - ts_c[0] + 1e-6
             # normalización
-            vx = vx * t_range / W
-            vy = vy * t_range / H
+            vx = np.tanh(vx * dt_local / W)
+            vy = np.tanh(vy * dt_local / H)
         else:
             vx = 0.0
             vy = 0.0
@@ -312,7 +313,8 @@ def build_nodes(events, H, W, cell_size=8):
         dt_cell = (ts_c[-1] - ts_c[0]) / t_range
 
         pol_mean = ps[idxs].mean()
-        event_rate = np.log1p(num_events / (dt_cell + 1e-6))
+        event_rate = num_events / (ts_c[-1] - ts_c[0] + 1e-6)
+        event_rate = np.log1p(event_rate)
 
         node_feat = [
             num_events_norm,
@@ -357,7 +359,7 @@ def build_graph(coords, k=8, alpha_t=2.0):
     if len(coords) == 0:
         return (
             np.zeros((0, 2), dtype=np.int32),
-            np.zeros((0, 6), dtype=np.float32)
+            np.zeros((0, 9), dtype=np.float32)
         )
 
     # kNN en espacio-tiempo
@@ -379,23 +381,53 @@ def build_graph(coords, k=8, alpha_t=2.0):
             dx = coords[j, 0] - coords[i, 0]
             dy = coords[j, 1] - coords[i, 1]
             dt = coords[j, 2] - coords[i, 2]   # sin alpha
+            
+            angle = np.arctan2(dy, dx)
+            cos_angle = np.cos(angle)
+            sin_angle = np.sin(angle)
 
             dist_xy = np.sqrt(dx*dx + dy*dy)
             dist_t = abs(dt)
             dist_total = np.sqrt(dx*dx + dy*dy + dt*dt)
             
+            
             # 🔥 normalización (clave)
             dist_xy = dist_xy / np.sqrt(2)
             dist_total = dist_total / np.sqrt(3)
+            
+            velocity = np.tanh(dist_xy / (dist_t + 0.05))
 
             # i -> j
             edge_index.append([i, j])
-            edge_attr.append([dx, dy, dt, dist_xy, dist_t, dist_total])
+            # edge_attr.append([dx, dy, dt, dist_xy, dist_t, dist_total])
+            edge_attr.append([
+                dx,
+                dy,
+                dt,
+                dist_xy,
+                dist_t,
+                dist_total,
+                cos_angle,
+                sin_angle,
+                velocity
+            ])
+
 
             # j -> i
             edge_index.append([j, i])
-            edge_attr.append([-dx, -dy, -dt, dist_xy, dist_t, dist_total])
+            # edge_attr.append([-dx, -dy, -dt, dist_xy, dist_t, dist_total])
 
+            edge_attr.append([
+                -dx,
+                -dy,
+                -dt,
+                dist_xy,
+                dist_t,
+                dist_total,
+                -cos_angle,
+                -sin_angle,
+                velocity
+            ])
     return (
         np.array(edge_index, dtype=np.int32),
         np.array(edge_attr, dtype=np.float32)
@@ -427,7 +459,7 @@ def generate_nodes():
                 feats=np.zeros((0, NODE_FEAT_DIM), dtype=np.float32),
                 coords=np.zeros((0, 3), dtype=np.float32),
                 edge_index=np.zeros((0, 2), dtype=np.int32),
-                edge_attr=np.zeros((0, 6), dtype=np.float32)
+                edge_attr=np.zeros((0, 9), dtype=np.float32)
             )
             continue
 
