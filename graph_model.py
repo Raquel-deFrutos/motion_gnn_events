@@ -200,7 +200,7 @@ def main():
     #nodes1
     # graph_dir ="/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/nodes/nodes/*.npz"
     #nodes2
-    graph_dir ="/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/nodes2/nodes/*.npz"
+    graph_dir ="/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/nodes2/*.npz"
     graph_files_raw = glob.glob(graph_dir)
     # graph_files_raw = glob.glob(os.path.join(graph_dir, "*.npz"))
     
