@@ -502,9 +502,17 @@ def main():
             f"wy={mae_components[4]:.3f}",
             f"wz={mae_components[5]:.3f}",
         )
-                
+       
 
-        print(f"Epoch {epoch:03d} | Train: {train_loss:.4f} | Val: {val_loss:.4f}")
+        # print(f"Epoch {epoch:03d} | Train: {train_loss:.4f} | Val: {val_loss:.4f}")
+        
+        labels = ["c1", "c2", "c3"]
+
+        print(
+            "MAE:",
+            *[f"{name}={err:.3f}" for name, err in zip(labels, mae_components)]
+        )
+        
         
         if val_loss < best_val:
             best_val = val_loss
