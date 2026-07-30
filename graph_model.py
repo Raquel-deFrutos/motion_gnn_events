@@ -152,10 +152,10 @@ class EgoMotionGNN(nn.Module):
             nn.Linear(hidden, hidden),
             nn.ReLU(),
             nn.Dropout(0.3),
-            ##traslacion + rptacion
-            # nn.Linear(hidden, 6)
+            #traslacion + rptacion
+            nn.Linear(hidden, 6)
             #solo traslacion o rotacion
-            nn.Linear(hidden, 3)
+            # nn.Linear(hidden, 3)
         )
 
     def forward(self, x, edge_index, edge_attr, batch):
@@ -225,13 +225,13 @@ def main():
 
     # LOAD GT
     df = pd.read_csv(gt_csv)
-    # gt = df[["t_x","t_y","t_z","w_x","w_y","w_z"]].values
+    gt = df[["t_x","t_y","t_z","w_x","w_y","w_z"]].values
     
-    #traslacion solo
+    # #traslacion solo
     # gt = df[["t_x", "t_y", "t_z"]].values
     
-    #rotacion solo
-    gt = df[["w_x", "w_y", "w_z"]].values
+    # #rotacion solo
+    # gt = df[["w_x", "w_y", "w_z"]].values
 
     # índices disponibles en graphs
     valid_indices = sorted(graph_dict.keys())
@@ -486,16 +486,16 @@ def main():
 
         print(f"Epoch {epoch:03d} | Train: {train_loss:.4f} | Val: {val_loss:.4f}")
         
-        component_errors = np.concatenate(component_errors, axis=0)
+        # component_errors = np.concatenate(component_errors, axis=0)
 
-        mae_components = component_errors.mean(axis=0)
+        # mae_components = component_errors.mean(axis=0)
 
-        labels = ["c1", "c2", "c3"]
+        # labels = ["c1", "c2", "c3"]
 
-        print(
-            "MAE:",
-            *[f"{name}={err:.3f}" for name, err in zip(labels, mae_components)]
-        )
+        # print(
+        #     "MAE:",
+        #     *[f"{name}={err:.3f}" for name, err in zip(labels, mae_components)]
+        # )
         
         
         if val_loss < best_val:
