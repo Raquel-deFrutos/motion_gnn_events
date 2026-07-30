@@ -274,50 +274,30 @@ def main():
     # # --------------------------
     # # OVERFIT TEST
     # # --------------------------
-    # small_N = 20
-
-    # train_dataset = MVSECGraphDataset(
-    #     graph_files[:small_N],
-    #     gt_norm[:small_N]
-    # )
-
-    # train_loader = DataLoader(
-    #     train_dataset,
-    #     batch_size=4,
-    #     shuffle=True,
-    #     collate_fn=collate_fn,
-    #     num_workers=0
-    # )
-    # val_loader = DataLoader(
-    # train_dataset,
-    # batch_size=4,
-    # shuffle=False,
-    # collate_fn=collate_fn,
-    # num_workers=0
-    # )
+    small_N = 20
 
     train_dataset = MVSECGraphDataset(
-        graph_files[:split],
-        gt_norm[:split]
+        graph_files[:small_N],
+        gt_norm[:small_N]
     )
 
-    val_dataset = MVSECGraphDataset(
-        graph_files[split:],
-        gt_norm[split:]
-    )
+    val_dataset = train_dataset
+
+
+    # train_dataset = MVSECGraphDataset(
+    #     graph_files[:split],
+    #     gt_norm[:split]
+    # )
+
+    # val_dataset = MVSECGraphDataset(
+    #     graph_files[split:],
+    #     gt_norm[split:]
+    # )
     
 
     _ = train_dataset[0]
 
 
-    # train_loader = DataLoader(
-    #     train_dataset,
-    #     batch_size=16,
-    #     shuffle=True,
-    #     collate_fn=collate_fn,
-    #     num_workers=0,      # 👈 clave
-    #     pin_memory=False
-    # )
     train_loader = DataLoader(
     train_dataset,
     batch_size=16,
@@ -383,7 +363,7 @@ def main():
     # --------------------------
     # TRAINING
     # --------------------------
-    EPOCHS = 40
+    EPOCHS = 200
 
     best_val = float("inf") 
 
