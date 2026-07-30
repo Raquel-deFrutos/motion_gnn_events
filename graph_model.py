@@ -489,23 +489,27 @@ def main():
         # =========================
         # MAE POR COMPONENTE
         # =========================
-        component_errors = np.concatenate(component_errors, axis=0)
+        # component_errors = np.concatenate(component_errors, axis=0)
 
-        mae_components = component_errors.mean(axis=0)
+        # mae_components = component_errors.mean(axis=0)
 
-        print(
-            "MAE:",
-            f"Tx={mae_components[0]:.3f}",
-            f"Ty={mae_components[1]:.3f}",
-            f"Tz={mae_components[2]:.3f}",
-            f"wx={mae_components[3]:.3f}",
-            f"wy={mae_components[4]:.3f}",
-            f"wz={mae_components[5]:.3f}",
-        )
+        # print(
+        #     "MAE:",
+        #     f"Tx={mae_components[0]:.3f}",
+        #     f"Ty={mae_components[1]:.3f}",
+        #     f"Tz={mae_components[2]:.3f}",
+        #     f"wx={mae_components[3]:.3f}",
+        #     f"wy={mae_components[4]:.3f}",
+        #     f"wz={mae_components[5]:.3f}",
+        # )
        
 
         # print(f"Epoch {epoch:03d} | Train: {train_loss:.4f} | Val: {val_loss:.4f}")
         
+        component_errors = np.concatenate(component_errors, axis=0)
+
+        mae_components = component_errors.mean(axis=0)
+
         labels = ["c1", "c2", "c3"]
 
         print(
