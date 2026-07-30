@@ -418,7 +418,7 @@ def main():
             loss_ego = loss_fn(pred, data.y)
          
 
-            flow_pred = ego_to_flow(pred)
+            # flow_pred = ego_to_flow(pred)
 
             # loss_flow = F.smooth_l1_loss(flow_pred, flow_gt)
             # loss = loss_ego + 0.2 * loss_flow
