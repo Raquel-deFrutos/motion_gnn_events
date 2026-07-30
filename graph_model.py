@@ -504,7 +504,7 @@ def main():
         # )
        
 
-        # print(f"Epoch {epoch:03d} | Train: {train_loss:.4f} | Val: {val_loss:.4f}")
+        print(f"Epoch {epoch:03d} | Train: {train_loss:.4f} | Val: {val_loss:.4f}")
         
         component_errors = np.concatenate(component_errors, axis=0)
 
