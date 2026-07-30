@@ -271,28 +271,28 @@ def main():
     np.save("gt_std.npy", std)
     
     
-    # # --------------------------
-    # # OVERFIT TEST
-    # # --------------------------
-    small_N = 20
-
-    train_dataset = MVSECGraphDataset(
-        graph_files[:small_N],
-        gt_norm[:small_N]
-    )
-
-    val_dataset = train_dataset
-
+    # # # --------------------------
+    # # # OVERFIT TEST
+    # # # --------------------------
+    # small_N = 20
 
     # train_dataset = MVSECGraphDataset(
-    #     graph_files[:split],
-    #     gt_norm[:split]
+    #     graph_files[:small_N],
+    #     gt_norm[:small_N]
     # )
 
-    # val_dataset = MVSECGraphDataset(
-    #     graph_files[split:],
-    #     gt_norm[split:]
-    # )
+    # val_dataset = train_dataset
+
+
+    train_dataset = MVSECGraphDataset(
+        graph_files[:split],
+        gt_norm[:split]
+    )
+
+    val_dataset = MVSECGraphDataset(
+        graph_files[split:],
+        gt_norm[split:]
+    )
     
 
     _ = train_dataset[0]
@@ -363,7 +363,7 @@ def main():
     # --------------------------
     # TRAINING
     # --------------------------
-    EPOCHS = 200
+    EPOCHS = 30
 
     best_val = float("inf") 
 
@@ -424,6 +424,7 @@ def main():
         with torch.no_grad():
 
             component_errors = []
+            component_errors_real = []   # <-- AÑADE ESTO
 
             for i, data in enumerate(val_loader):
 
@@ -441,14 +442,9 @@ def main():
                 
                 pred_denorm = pred.cpu().numpy() * std + mean
                 gt_denorm = data.y.cpu().numpy() * std + mean
+                error_real = np.abs(pred_denorm - gt_denorm)
 
-                if epoch == 0 and i == 0:
-                    print("\nPrimeras predicciones:")
-                    for k in range(min(5, len(pred_denorm))):
-                        print("Pred:", np.round(pred_denorm[k], 3))
-                        print("GT:  ", np.round(gt_denorm[k], 3))
-                        print()
-
+                component_errors_real.append(error_real)
 
                 # =========================
                 # ERROR POR COMPONENTE
@@ -465,8 +461,24 @@ def main():
 
 
         val_loss /= len(val_loader)
-        
-        # =========================
+        component_errors_real = np.concatenate(
+            component_errors_real,
+            axis=0
+        )
+
+        mae_real = component_errors_real.mean(axis=0)
+
+        print(
+            "MAE real:",
+            f"tx={mae_real[0]:.4f}",
+            f"ty={mae_real[1]:.4f}",
+            f"tz={mae_real[2]:.4f}",
+            f"wx={mae_real[3]:.4f}",
+            f"wy={mae_real[4]:.4f}",
+            f"wz={mae_real[5]:.4f}",
+        )
+                
+                # =========================
         # MAE POR COMPONENTE
         # =========================
         # component_errors = np.concatenate(component_errors, axis=0)
