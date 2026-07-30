@@ -17,7 +17,7 @@ parser.add_argument("--gt", type=Path, required=True,
 parser.add_argument("--data", type=Path, required=True,
                     help="Path to *_data.hdf5")
 parser.add_argument(
-    "--freq", type=str, choices=["depth", "image", "flow"], default="depth",
+    "--freq", type=str, choices=["depth", "image", "flow"], default="flow",
     help="Frequency to split events: 'depth' (~20Hz), 'flow' (~20Hz),  or 'image' (~45Hz)")
 # parser.add_argument("--voxel_bins", type=int, default=5)
 
@@ -436,7 +436,7 @@ def build_graph(coords, k=8, alpha_t=2.0):
 
 def generate_nodes():
     NODE_FEAT_DIM = 19
-    node_dir = EVENTS_OUT_DIR / "nodes2"
+    node_dir = EVENTS_OUT_DIR / "nodesFlow"
     node_dir.mkdir(parents=True, exist_ok=True)
 
     # dimensiones
