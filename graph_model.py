@@ -225,10 +225,10 @@ def main():
     # gt_csv = "/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/gt/gt_aligned.csv"
     gt_csv = "/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/gt/gt_aligned_woInterp_PoseRe.csv"
     
-    print("tz min:", gt[:, 0].min())
-    print("tz max:", gt[:, 0].max())
-    print("tz mean:", gt[:, 0].mean())
-    print("tz std:", gt[:, 0].std())
+    # print("tz min:", gt[:, 0].min())
+    # print("tz max:", gt[:, 0].max())
+    # print("tz mean:", gt[:, 0].mean())
+    # print("tz std:", gt[:, 0].std())
         
 
 
