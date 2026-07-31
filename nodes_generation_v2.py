@@ -17,7 +17,7 @@ parser.add_argument("--gt", type=Path, required=True,
 parser.add_argument("--data", type=Path, required=True,
                     help="Path to *_data.hdf5")
 parser.add_argument(
-    "--freq", type=str, choices=["depth", "image", "flow"], default="flow",
+    "--freq", type=str, choices=["depth", "image", "flow"], default="depth",
     help="Frequency to split events: 'depth' (~20Hz), 'flow' (~20Hz),  or 'image' (~45Hz)")
 # parser.add_argument("--voxel_bins", type=int, default=5)
 
@@ -212,7 +212,7 @@ def events_to_voxel_grid(events, num_bins, height, width):
 # ==========================================================
 # NODES
 # ==========================================================
-def build_nodes(events, H, W, cell_size=8):
+def build_nodes(events, depth, H, W, cell_size=8):
 
     """
     events: (N,4) -> x,y,p,t
@@ -221,7 +221,7 @@ def build_nodes(events, H, W, cell_size=8):
         coords: (M, 3)  -> x,y,t
     """
     if len(events) == 0:
-        return np.zeros((0, 16), dtype=np.float32), np.zeros((0, 3), dtype=np.float32)
+        return np.zeros((0, 18), dtype=np.float32), np.zeros((0, 3), dtype=np.float32)
     
     xs = events[:, 0].astype(np.float32)
     ys = events[:, 1].astype(np.float32)
@@ -246,6 +246,24 @@ def build_nodes(events, H, W, cell_size=8):
 
     for (cx, cy), idxs in grid_dict.items():
         idxs = np.array(idxs)
+        
+        depth_values = depth[
+        ys[idxs].astype(np.int32),
+        xs[idxs].astype(np.int32)
+        ]
+
+        depth_values = depth_values[np.isfinite(depth_values)]
+        depth_values = depth_values[depth_values > 0]
+
+        if len(depth_values) == 0:
+            depth_mean = 0.0
+            depth_std = 0.0
+        else:
+            depth_mean = np.median(depth_values)
+            depth_std = np.std(depth_values)
+
+        depth_mean = np.log1p(depth_mean)
+        depth_std = np.log1p(depth_std)
 
         x_mean = (xs[idxs].mean() / W) * 2 - 1
         y_mean = (ys[idxs].mean() / H) * 2 - 1
@@ -332,7 +350,9 @@ def build_nodes(events, H, W, cell_size=8):
             pos_ratio,
             pol_mean,
             vx,
-            vy
+            vy,
+            depth_mean,
+            depth_std
         ]
 
         feats.append(node_feat)
@@ -435,25 +455,34 @@ def build_graph(coords, k=8, alpha_t=2.0):
     
 
 def generate_nodes():
-    NODE_FEAT_DIM = 19
-    node_dir = EVENTS_OUT_DIR / "nodesFlow"
+    NODE_FEAT_DIM = 21
+    node_dir = EVENTS_OUT_DIR / "nodesDepth"
     node_dir.mkdir(parents=True, exist_ok=True)
+    depth_dir = Path(r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\mvsec_outdoor_day_1_20Hz\mvsec_outdoor_day_1_20Hz\outdoor_day_1\depth_rectified")
 
     # dimensiones
     with h5py.File(DATA_PATH, "r") as f:
         img = f["davis/left/image_raw"]
         H, W = img.shape[1], img.shape[2]
+        
 
     event_files = sorted(EVENTS_OUT_DIR.glob("*.h5"))
 
     for ev_file in event_files:
-        with h5py.File(ev_file, "r") as h5:
-            evs = h5["myDataset"][:]
 
         idx = int(ev_file.stem)
 
+        depth_path = depth_dir / f"depth_metric_{idx:010d}.npy"
+
+        if depth_path.exists():
+            depth = np.load(depth_path).astype(np.float32)
+        else:
+            depth = np.zeros((H, W), dtype=np.float32)
+
+        with h5py.File(ev_file, "r") as h5:
+            evs = h5["myDataset"][:]
+
         if len(evs) == 0:
-            # guardar vacío para mantener alineación
             np.savez(
                 node_dir / f"graph_{idx:010d}.npz",
                 feats=np.zeros((0, NODE_FEAT_DIM), dtype=np.float32),
@@ -464,16 +493,25 @@ def generate_nodes():
             continue
 
         events = np.zeros((len(evs), 4), dtype=np.float64)
+
         events[:, 0] = evs["x"].astype(np.float64)
         events[:, 1] = evs["y"].astype(np.float64)
         events[:, 2] = np.where(evs["p"] > 0, 1.0, -1.0)
         events[:, 3] = evs["ts"].astype(np.float64)
 
-
         if not np.all(np.diff(events[:, 3]) >= 0):
             events = events[np.argsort(events[:, 3])]
-        feats, coords = build_nodes(events, H, W, cell_size=8)
+
+        feats, coords = build_nodes(
+            events,
+            depth,
+            H,
+            W,
+            cell_size=8
+        )
+
         feats = np.concatenate([feats, coords], axis=1)
+
         edge_index, edge_attr = build_graph(coords, k=8)
 
         np.savez(
@@ -483,9 +521,9 @@ def generate_nodes():
             edge_index=edge_index,
             edge_attr=edge_attr
         )
-
-    print("Graphs (nodes + edges) saved")
-    
+        
+    print("Graphs (nodes + edges + depth) saved")
+        
 
 
 
