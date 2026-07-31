@@ -85,56 +85,56 @@ def generate_gt_aligned(gt_path, timestamps_path, output_csv):
         W.append(w)
         t_mid.append(0.5 * (ts[i] + ts[i+1]))
 
-    # V = np.array(V)
-    # W = np.array(W)
-    # t_mid = np.array(t_mid)
+    V = np.array(V)
+    W = np.array(W)
+    t_mid = np.array(t_mid)
     
     #     # =========================
     # # COMPUTE DELTA POSE
     # # =========================
-    print("Calculando delta pose...")
+    # print("Calculando delta pose...")
 
-    dP = []   # traslación relativa
-    dR = []   # rotación (axis-angle)
-    t_mid = []
+    # dP = []   # traslación relativa
+    # dR = []   # rotación (axis-angle)
+    # t_mid = []
 
-    for i in range(len(T) - 1):
-        dt = ts[i+1] - ts[i]
-        if dt <= 0:
-            continue
+    # for i in range(len(T) - 1):
+    #     dt = ts[i+1] - ts[i]
+    #     if dt <= 0:
+    #         continue
 
-        T0, T1 = T[i], T[i+1]
+    #     T0, T1 = T[i], T[i+1]
 
-        R0 = T0[:3, :3]
-        R1 = T1[:3, :3]
-        p0 = T0[:3, 3]
-        p1 = T1[:3, 3]
+    #     R0 = T0[:3, :3]
+    #     R1 = T1[:3, :3]
+    #     p0 = T0[:3, 3]
+    #     p1 = T1[:3, 3]
 
-        # 👉 transformación relativa correcta
-        R_rel = R0.T @ R1
-        t_rel = R0.T @ (p1 - p0)
+    #     # 👉 transformación relativa correcta
+    #     R_rel = R0.T @ R1
+    #     t_rel = R0.T @ (p1 - p0)
 
-        # rotación en axis-angle
-        rotvec = R.from_matrix(R_rel).as_rotvec()
+    #     # rotación en axis-angle
+    #     rotvec = R.from_matrix(R_rel).as_rotvec()
 
-        dP.append(t_rel)
-        dR.append(rotvec)
-        t_mid.append(0.5 * (ts[i] + ts[i+1]))
+    #     dP.append(t_rel)
+    #     dR.append(rotvec)
+    #     t_mid.append(0.5 * (ts[i] + ts[i+1]))
 
-    dP = np.array(dP)
-    dR = np.array(dR)
-    t_mid = np.array(t_mid)
+    # dP = np.array(dP)
+    # dR = np.array(dR)
+    # t_mid = np.array(t_mid)
 
-    # =========================
-    # LOAD FRAME TIMESTAMPS
-    # =========================
-    print("Cargando timestamps de frames...")
-    t_frames_raw = np.loadtxt(timestamps_path)
-    t_frames = ts_to_seconds(t_frames_raw)
+    # # =========================
+    # # LOAD FRAME TIMESTAMPS
+    # # =========================
+    # print("Cargando timestamps de frames...")
+    # t_frames_raw = np.loadtxt(timestamps_path)
+    # t_frames = ts_to_seconds(t_frames_raw)
 
-    # =========================
-    # INTERPOLATION
-    # =========================
+    # # =========================
+    # # INTERPOLATION
+    # # =========================
     # print("Interpolando GT...")
 
     # tx = interp_safe(t_frames, t_mid, V[:, 0])
@@ -148,13 +148,13 @@ def generate_gt_aligned(gt_path, timestamps_path, output_csv):
     ##con delta pose(no twist)
     print("Interpolando GT...")
 
-    dx = interp_safe(t_frames, t_mid, dP[:, 0])
-    dy = interp_safe(t_frames, t_mid, dP[:, 1])
-    dz = interp_safe(t_frames, t_mid, dP[:, 2])
+    # dx = interp_safe(t_frames, t_mid, dP[:, 0])
+    # dy = interp_safe(t_frames, t_mid, dP[:, 1])
+    # dz = interp_safe(t_frames, t_mid, dP[:, 2])
 
-    rx = interp_safe(t_frames, t_mid, dR[:, 0])
-    ry = interp_safe(t_frames, t_mid, dR[:, 1])
-    rz = interp_safe(t_frames, t_mid, dR[:, 2])
+    # rx = interp_safe(t_frames, t_mid, dR[:, 0])
+    # ry = interp_safe(t_frames, t_mid, dR[:, 1])
+    # rz = interp_safe(t_frames, t_mid, dR[:, 2])
     
 
 
@@ -164,15 +164,15 @@ def generate_gt_aligned(gt_path, timestamps_path, output_csv):
     print("Guardando CSV...")
 
     df = pd.DataFrame({
-        "frame_id": np.arange(len(t_frames) - 1),
-        "t_raw": t_frames_raw[:-1],
-        "t_s": t_frames[:-1],
-        "t_x": tx[:-1],
-        "t_y": ty[:-1],
-        "t_z": tz[:-1],
-        "w_x": wx[:-1],
-        "w_y": wy[:-1],
-        "w_z": wz[:-1]
+        "frame_id": np.arange(len(V)),
+        "t_raw": ts_raw[:-1],
+        "t_s": ts[:-1],
+        "t_x": V[:, 0],
+        "t_y": V[:, 1],
+        "t_z": V[:, 2],
+        "w_x": W[:, 0],
+        "w_y": W[:, 1],
+        "w_z": W[:, 2]
     })
     
     # df = pd.DataFrame({
@@ -203,6 +203,6 @@ if __name__ == "__main__":
 
     gt_path = r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\outdoor_day1_gt.hdf5"
     timestamps_path = r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\outdoor_day1\timestamps_depth.txt"
-    output_csv = r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\outdoor_day1\gt_aligned.csv"
+    output_csv = r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\outdoor_day1\gt_aligned_woInterp.csv"
 
     generate_gt_aligned(gt_path, timestamps_path, output_csv)

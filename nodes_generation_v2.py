@@ -17,7 +17,7 @@ parser.add_argument("--gt", type=Path, required=True,
 parser.add_argument("--data", type=Path, required=True,
                     help="Path to *_data.hdf5")
 parser.add_argument(
-    "--freq", type=str, choices=["depth", "image", "flow"], default="depth",
+    "--freq", type=str, choices=["depth", "image", "flow", "pose"], default="pose",
     help="Frequency to split events: 'depth' (~20Hz), 'flow' (~20Hz),  or 'image' (~45Hz)")
 # parser.add_argument("--voxel_bins", type=int, default=5)
 
@@ -33,6 +33,7 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 
 TIMESTAMPS_DEPTH_TXT = OUTPUT_DIR / "timestamps_depth.txt"
+TIMESTAMPS_POSE_TXT = OUTPUT_DIR / "timestamps_pose.txt"
 TIMESTAMPS_FLOW_TXT  = OUTPUT_DIR / "timestamps_flow.txt"
 TIMESTAMPS_IMAGES_TXT  = OUTPUT_DIR / "timestamps_images.txt"
 EVENTS_OUT_DIR       = OUTPUT_DIR / "davis" / "left" / "events"
@@ -57,21 +58,21 @@ EVENT_DTYPE = np.dtype([
 ])
 
 
-# ==========================================================
-# GT PROCESSING
-# ==========================================================
-def save_gt_timestamps():
-    with h5py.File(GT_PATH, "r") as f:
-        flow_ts  = f["davis/left/flow_dist_ts"][:]
-        depth_ts = f["davis/left/depth_image_raw_ts"][:]
+# # ==========================================================
+# # GT PROCESSING
+# # ==========================================================
+# def save_gt_timestamps():
+#     with h5py.File(GT_PATH, "r") as f:
+#         flow_ts  = f["davis/left/flow_dist_ts"][:]
+#         depth_ts = f["davis/left/depth_image_raw_ts"][:]
         
-    with h5py.File(DATA_PATH, "r") as f:
-        image_ts = f["davis/left/image_raw_ts"][:]
+#     with h5py.File(DATA_PATH, "r") as f:
+#         image_ts = f["davis/left/image_raw_ts"][:]
 
-    np.savetxt(TIMESTAMPS_DEPTH_TXT, depth_ts, fmt="%.18e")
-    np.savetxt(TIMESTAMPS_FLOW_TXT, flow_ts,  fmt="%.18e")
-    np.savetxt(TIMESTAMPS_IMAGES_TXT, image_ts,  fmt="%.18e")
-    print(f"Timestamps saved")
+#     np.savetxt(TIMESTAMPS_DEPTH_TXT, depth_ts, fmt="%.18e")
+#     np.savetxt(TIMESTAMPS_FLOW_TXT, flow_ts,  fmt="%.18e")
+#     np.savetxt(TIMESTAMPS_IMAGES_TXT, image_ts,  fmt="%.18e")
+#     print(f"Timestamps saved")
 
 
 
@@ -247,26 +248,26 @@ def build_nodes(events, depth, H, W, cell_size=8):
     for (cx, cy), idxs in grid_dict.items():
         idxs = np.array(idxs)
         
-        x0 = cx * cell_size
-        x1 = min((cx + 1) * cell_size, W)
+        # x0 = cx * cell_size
+        # x1 = min((cx + 1) * cell_size, W)
 
-        y0 = cy * cell_size
-        y1 = min((cy + 1) * cell_size, H)
+        # y0 = cy * cell_size
+        # y1 = min((cy + 1) * cell_size, H)
 
-        depth_values = depth[y0:y1, x0:x1].reshape(-1)
+        # depth_values = depth[y0:y1, x0:x1].reshape(-1)
 
-        depth_values = depth_values[np.isfinite(depth_values)]
-        depth_values = depth_values[depth_values > 0]
+        # depth_values = depth_values[np.isfinite(depth_values)]
+        # depth_values = depth_values[depth_values > 0]
 
-        if len(depth_values) == 0:
-            depth_mean = 0.0
-            depth_std = 0.0
-        else:
-            depth_mean = np.mean(depth_values)
-            depth_std = np.std(depth_values)
+        # if len(depth_values) == 0:
+        #     depth_mean = 0.0
+        #     depth_std = 0.0
+        # else:
+        #     depth_mean = np.mean(depth_values)
+        #     depth_std = np.std(depth_values)
 
-        depth_mean = np.log1p(depth_mean)
-        depth_std = np.log1p(depth_std)
+        # depth_mean = np.log1p(depth_mean)
+        # depth_std = np.log1p(depth_std)
 
         x_mean = (xs[idxs].mean() / W) * 2 - 1
         y_mean = (ys[idxs].mean() / H) * 2 - 1
@@ -354,8 +355,8 @@ def build_nodes(events, depth, H, W, cell_size=8):
             pol_mean,
             vx,
             vy,
-            depth_mean,
-            depth_std
+            # depth_mean,
+            # depth_std
         ]
 
         feats.append(node_feat)
@@ -458,8 +459,8 @@ def build_graph(coords, k=8, alpha_t=2.0):
     
 
 def generate_nodes():
-    NODE_FEAT_DIM = 21
-    node_dir = EVENTS_OUT_DIR / "nodesDepth"
+    NODE_FEAT_DIM = 19
+    node_dir = EVENTS_OUT_DIR / "nodesPose"
     node_dir.mkdir(parents=True, exist_ok=True)
     depth_dir = Path(r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\mvsec_outdoor_day_1_20Hz\mvsec_outdoor_day_1_20Hz\outdoor_day_1\depth_rectified")
 
@@ -531,8 +532,8 @@ def generate_nodes():
 
 
 def main():
-    save_gt_timestamps()
-    split_events_by_timestamps()
+    # save_gt_timestamps()
+    # split_events_by_timestamps()
     generate_nodes()
 
 
