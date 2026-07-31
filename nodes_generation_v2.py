@@ -247,10 +247,13 @@ def build_nodes(events, depth, H, W, cell_size=8):
     for (cx, cy), idxs in grid_dict.items():
         idxs = np.array(idxs)
         
-        depth_values = depth[
-        ys[idxs].astype(np.int32),
-        xs[idxs].astype(np.int32)
-        ]
+        x0 = cx * cell_size
+        x1 = min((cx + 1) * cell_size, W)
+
+        y0 = cy * cell_size
+        y1 = min((cy + 1) * cell_size, H)
+
+        depth_values = depth[y0:y1, x0:x1].reshape(-1)
 
         depth_values = depth_values[np.isfinite(depth_values)]
         depth_values = depth_values[depth_values > 0]
@@ -259,7 +262,7 @@ def build_nodes(events, depth, H, W, cell_size=8):
             depth_mean = 0.0
             depth_std = 0.0
         else:
-            depth_mean = np.median(depth_values)
+            depth_mean = np.mean(depth_values)
             depth_std = np.std(depth_values)
 
         depth_mean = np.log1p(depth_mean)
