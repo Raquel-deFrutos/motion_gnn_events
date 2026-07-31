@@ -162,7 +162,7 @@ class EgoMotionGNN(nn.Module):
             nn.Linear(hidden, hidden),
             nn.ReLU(),
             nn.Dropout(0.3),
-            nn.Linear(hidden, 1)
+            nn.Linear(hidden, 3)
         )
 
     def forward(self, x, edge_index, edge_attr, batch):
@@ -241,7 +241,7 @@ def main():
     # gt = df[["t_x","t_y","t_z","w_x","w_y","w_z"]].values
     # gt = df[["t_z"]].values
     # gt = df[["dx","dy","dz","rx","ry","rz"]].values
-    gt = df[["dz"]].values
+    gt = df[["rx","ry","rz"]].values
     
     # #traslacion solo
     # gt = df[["t_x", "t_y", "t_z"]].values
@@ -487,8 +487,8 @@ def main():
         print(
             "MAE real:",
             f"tx={mae_real[0]:.4f}",
-            # f"ty={mae_real[1]:.4f}",
-            # f"tz={mae_real[2]:.4f}",
+            f"ty={mae_real[1]:.4f}",
+            f"tz={mae_real[2]:.4f}",
             # f"wx={mae_real[3]:.4f}",
             # f"wy={mae_real[4]:.4f}",
             # f"wz={mae_real[5]:.4f}",
