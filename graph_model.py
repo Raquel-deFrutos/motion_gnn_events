@@ -223,8 +223,13 @@ def main():
     # gt_csv = r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\outdoor_day1/gt_aligned.csv"
     #server
     # gt_csv = "/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/gt/gt_aligned.csv"
-    gt_csv = "/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/gt/gt_aligned_woInterp.csv"
+    gt_csv = "/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/gt/gt_aligned_woInterp_PoseRe.csv"
     
+    print("tz min:", gt[:, 0].min())
+    print("tz max:", gt[:, 0].max())
+    print("tz mean:", gt[:, 0].mean())
+    print("tz std:", gt[:, 0].std())
+        
 
 
 
@@ -234,7 +239,9 @@ def main():
     # LOAD GT
     df = pd.read_csv(gt_csv)
     # gt = df[["t_x","t_y","t_z","w_x","w_y","w_z"]].values
-    gt = df[["t_z"]].values
+    # gt = df[["t_z"]].values
+    # gt = df[["dx","dy","dz","rx","ry","rz"]].values
+    gt = df[["dz"]].values
     
     # #traslacion solo
     # gt = df[["t_x", "t_y", "t_z"]].values
