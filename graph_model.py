@@ -131,7 +131,7 @@ from torch_geometric.nn import GlobalAttention, MessagePassing
 class EgoMotionGNN(nn.Module):
     # def __init__(self, node_dim=10, edge_dim=6, hidden=64):
     ##nodes2
-    def __init__(self, node_dim=21, edge_dim=9, hidden=64):
+    def __init__(self, node_dim=19, edge_dim=9, hidden=64):
         super().__init__()
 
         self.gnn1 = SimpleGNNLayer(node_dim, edge_dim, hidden)
