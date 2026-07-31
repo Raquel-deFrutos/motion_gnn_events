@@ -147,15 +147,22 @@ class EgoMotionGNN(nn.Module):
             )
         )
 
-        # Head de regresión (ego-motion: tx, ty, tz, wx, wy, wz)
+        # # Head de regresión (ego-motion: tx, ty, tz, wx, wy, wz)
+        # self.head = nn.Sequential(
+        #     nn.Linear(hidden, hidden),
+        #     nn.ReLU(),
+        #     nn.Dropout(0.3),
+        #     #traslacion + rptacion
+        #     nn.Linear(hidden, 6)
+        #     #solo traslacion o rotacion
+        #     # nn.Linear(hidden, 3)
+        # )
+        
         self.head = nn.Sequential(
             nn.Linear(hidden, hidden),
             nn.ReLU(),
             nn.Dropout(0.3),
-            #traslacion + rptacion
-            nn.Linear(hidden, 6)
-            #solo traslacion o rotacion
-            # nn.Linear(hidden, 3)
+            nn.Linear(hidden, 1)
         )
 
     def forward(self, x, edge_index, edge_attr, batch):
@@ -226,7 +233,8 @@ def main():
 
     # LOAD GT
     df = pd.read_csv(gt_csv)
-    gt = df[["t_x","t_y","t_z","w_x","w_y","w_z"]].values
+    # gt = df[["t_x","t_y","t_z","w_x","w_y","w_z"]].values
+    gt = df[["t_z"]].values
     
     # #traslacion solo
     # gt = df[["t_x", "t_y", "t_z"]].values
