@@ -419,6 +419,7 @@ def main():
             # if epoch == 0 and i == 0:
             #     print("PRED:", pred[0].detach().cpu())
            
+            gt_batch = data.y.view(-1, 6)
             loss_ego = loss_fn(pred, data.y)
          
 
@@ -463,7 +464,7 @@ def main():
                     data.edge_attr,
                     data.batch
                 )
-                
+                gt_batch = data.y.view(-1, 6)
                 pred_denorm = pred.cpu().numpy() * std + mean
                 gt_denorm = data.y.cpu().numpy() * std + mean
                 
