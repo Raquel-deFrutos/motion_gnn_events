@@ -219,9 +219,9 @@ def main():
     #nodes1
     # graph_dir ="/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/nodes/nodes/*.npz"
     #nodes2
-    graph_dir ="/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/nodesPose/*.npz"
+    # graph_dir ="/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/nodesPose/*.npz"
     
-    # graph_dir ="/home/rdefrutos/motion_gnn_events/data/MVSEC_indoorflying1/nodesPose/nodesPose/*.npz"
+    graph_dir ="/home/rdefrutos/motion_gnn_events/data/MVSEC_indoorflying1/nodesPose/nodesPose/*.npz"
     graph_files_raw = glob.glob(graph_dir)
     # graph_files_raw = glob.glob(os.path.join(graph_dir, "*.npz"))
     
@@ -229,8 +229,8 @@ def main():
     # gt_csv = r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\outdoor_day1/gt_aligned.csv"
     #server
     # gt_csv = "/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/gt/gt_aligned.csv"
-    gt_csv = "/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/gt/gt_aligned_woInterp_PoseRe.csv"
-    # gt_csv = "/home/rdefrutos/motion_gnn_events/data/MVSEC_indoorflying1/gt/gt_aligned_woInterp_PoseRe.csv"
+    # gt_csv = "/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/gt/gt_aligned_woInterp_PoseRe.csv"
+    gt_csv = "/home/rdefrutos/motion_gnn_events/data/MVSEC_indoorflying1/gt/gt_aligned_woInterp_PoseRe.csv"
     
     
     # print("tz min:", gt[:, 0].min())
