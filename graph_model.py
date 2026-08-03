@@ -217,7 +217,7 @@ def main():
     #nodes2
     # graph_dir ="/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/nodesPose/*.npz"
     
-    graph_dir ="/home/rdefrutos/motion_gnn_events/data/MVSEC_indoorflying1/nodesPose/*.npz"
+    graph_dir ="/home/rdefrutos/motion_gnn_events/data/MVSEC_indoorflying1/nodesPose/nodesPose/*.npz"
     graph_files_raw = glob.glob(graph_dir)
     # graph_files_raw = glob.glob(os.path.join(graph_dir, "*.npz"))
     
