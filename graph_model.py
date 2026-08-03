@@ -44,7 +44,7 @@ class MVSECGraphDataset(torch.utils.data.Dataset):
         x = torch.tensor(data_np["feats"], dtype=torch.float32)
         
         if x.shape[0] == 0:
-            print("Grafo vacío:", self.graph_files[idx])
+            # print("Grafo vacío:", self.graph_files[idx])
             return None
         
         edge_index = torch.tensor(data_np["edge_index"], dtype=torch.long)
