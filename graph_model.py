@@ -494,11 +494,11 @@ def main():
                 pred_denorm = pred.cpu().numpy() * std + mean
                 gt_denorm = data.y.cpu().numpy() * std + mean
                 
-                print("pred.shape =", pred.shape)
-                print("data.y.shape =", data.y.shape)
-                print("pred_denorm.shape =", pred_denorm.shape)
-                print("gt_denorm.shape =", gt_denorm.shape)
-                print("num_graphs =", data.num_graphs)
+                # print("pred.shape =", pred.shape)
+                # print("data.y.shape =", data.y.shape)
+                # print("pred_denorm.shape =", pred_denorm.shape)
+                # print("gt_denorm.shape =", gt_denorm.shape)
+                # print("num_graphs =", data.num_graphs)
                 error_real = np.abs(pred_denorm - gt_denorm)
 
                 component_errors_real.append(error_real)
