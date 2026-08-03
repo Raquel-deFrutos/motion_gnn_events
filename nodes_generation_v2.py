@@ -41,12 +41,17 @@ EVENTS_OUT_DIR.mkdir(parents=True, exist_ok=True)
 (OUTPUT_DIR / "depth_rectified").mkdir(exist_ok=True)
 (OUTPUT_DIR / "optical_flow").mkdir(exist_ok=True)
 
+
+
 if freq == "depth":
     TIMESTAMPS_TXT = OUTPUT_DIR / "timestamps_depth.txt"
 elif freq == "image":
     TIMESTAMPS_TXT = OUTPUT_DIR / "timestamps_images.txt"
 elif freq == "flow":
     TIMESTAMPS_TXT = OUTPUT_DIR / "timestamps_flow.txt"
+    
+elif freq == "pose":
+    TIMESTAMPS_TXT = OUTPUT_DIR / "timestamps_pose.txt"
 
 
 
@@ -61,18 +66,18 @@ EVENT_DTYPE = np.dtype([
 # # ==========================================================
 # # GT PROCESSING
 # # ==========================================================
-# def save_gt_timestamps():
-#     with h5py.File(GT_PATH, "r") as f:
-#         flow_ts  = f["davis/left/flow_dist_ts"][:]
-#         depth_ts = f["davis/left/depth_image_raw_ts"][:]
+def save_gt_timestamps():
+    with h5py.File(GT_PATH, "r") as f:
+        flow_ts  = f["davis/left/flow_dist_ts"][:]
+        depth_ts = f["davis/left/depth_image_raw_ts"][:]
         
-#     with h5py.File(DATA_PATH, "r") as f:
-#         image_ts = f["davis/left/image_raw_ts"][:]
+    with h5py.File(DATA_PATH, "r") as f:
+        image_ts = f["davis/left/image_raw_ts"][:]
 
-#     np.savetxt(TIMESTAMPS_DEPTH_TXT, depth_ts, fmt="%.18e")
-#     np.savetxt(TIMESTAMPS_FLOW_TXT, flow_ts,  fmt="%.18e")
-#     np.savetxt(TIMESTAMPS_IMAGES_TXT, image_ts,  fmt="%.18e")
-#     print(f"Timestamps saved")
+    np.savetxt(TIMESTAMPS_DEPTH_TXT, depth_ts, fmt="%.18e")
+    np.savetxt(TIMESTAMPS_FLOW_TXT, flow_ts,  fmt="%.18e")
+    np.savetxt(TIMESTAMPS_IMAGES_TXT, image_ts,  fmt="%.18e")
+    print(f"Timestamps saved")
 
 
 
@@ -213,7 +218,7 @@ def events_to_voxel_grid(events, num_bins, height, width):
 # ==========================================================
 # NODES
 # ==========================================================
-def build_nodes(events, depth, H, W, cell_size=8):
+def build_nodes(events, H, W, cell_size=8):
 
     """
     events: (N,4) -> x,y,p,t
@@ -462,13 +467,14 @@ def generate_nodes():
     NODE_FEAT_DIM = 19
     node_dir = EVENTS_OUT_DIR / "nodesPose"
     node_dir.mkdir(parents=True, exist_ok=True)
-    depth_dir = Path(r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\mvsec_outdoor_day_1_20Hz\mvsec_outdoor_day_1_20Hz\outdoor_day_1\depth_rectified")
+    # depth_dir = Path(r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\mvsec_outdoor_day_1_20Hz\mvsec_outdoor_day_1_20Hz\outdoor_day_1\depth_rectified")
 
     # dimensiones
     with h5py.File(DATA_PATH, "r") as f:
         img = f["davis/left/image_raw"]
         H, W = img.shape[1], img.shape[2]
-        
+    
+
 
     event_files = sorted(EVENTS_OUT_DIR.glob("*.h5"))
 
@@ -476,12 +482,12 @@ def generate_nodes():
 
         idx = int(ev_file.stem)
 
-        depth_path = depth_dir / f"depth_metric_{idx:010d}.npy"
+        # depth_path = depth_dir / f"depth_metric_{idx:010d}.npy"
 
-        if depth_path.exists():
-            depth = np.load(depth_path).astype(np.float32)
-        else:
-            depth = np.zeros((H, W), dtype=np.float32)
+        # if depth_path.exists():
+        #     depth = np.load(depth_path).astype(np.float32)
+        # else:
+        #     depth = np.zeros((H, W), dtype=np.float32)
 
         with h5py.File(ev_file, "r") as h5:
             evs = h5["myDataset"][:]
@@ -508,7 +514,7 @@ def generate_nodes():
 
         feats, coords = build_nodes(
             events,
-            depth,
+            # depth,
             H,
             W,
             cell_size=8

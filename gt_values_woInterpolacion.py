@@ -157,8 +157,12 @@ def generate_gt_aligned(gt_path, timestamps_path, output_csv):
 # =========================
 if __name__ == "__main__":
 
-    gt_path = r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\outdoor_day1_gt.hdf5"
+    # gt_path = r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\outdoor_day1_gt.hdf5"
+    # timestamps_path = r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\outdoor_day1\timestamps_depth.txt"
+    # output_csv = r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\outdoor_day1\gt_aligned_woInterp_PoseRe.csv"
+    
+    gt_path = r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\indoor_flying1_gt.hdf5"
     timestamps_path = r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\outdoor_day1\timestamps_depth.txt"
-    output_csv = r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\outdoor_day1\gt_aligned_woInterp_PoseRe.csv"
+    output_csv = r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\indoor_flying1\gt_aligned_woInterp_PoseRe.csv"
 
     generate_gt_aligned(gt_path, timestamps_path, output_csv)
