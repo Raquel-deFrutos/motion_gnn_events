@@ -45,6 +45,7 @@ class MVSECGraphDataset(torch.utils.data.Dataset):
         
         if x.shape[0] == 0:
             print("Grafo vacío:", self.graph_files[idx])
+            return None
         
         edge_index = torch.tensor(data_np["edge_index"], dtype=torch.long)
         edge_attr = torch.tensor(data_np["edge_attr"], dtype=torch.float32)
@@ -79,7 +80,11 @@ class MVSECGraphDataset(torch.utils.data.Dataset):
 
 def collate_fn(batch):
     batch = [b for b in batch if b is not None]
-    data = Batch.from_data_list(batch)
+    # data = Batch.from_data_list(batch)
+    if len(batch) == 0:
+        return None
+
+    return Batch.from_data_list(batch)
     # data.y_flow = torch.stack([b.y_flow for b in batch], dim=0)
 
 
