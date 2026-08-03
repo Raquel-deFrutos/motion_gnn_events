@@ -47,14 +47,14 @@ class MVSECGraphDataset(torch.utils.data.Dataset):
 
         # ##local
         # flow_path = f"C:\\Users\\Raquel\\Documents\\Doct\\Algoritmo\\MVSEC\\outdoor_day1\\optical_flow\\flow_{get_idx(self.graph_files[idx]):010d}.npy"
-        #server
-        flow_path = f"/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/optical_flow/flow_{get_idx(self.graph_files[idx]):010d}.npy"
-        flow = np.load(flow_path).astype(np.float32)  # (2,H,W)
+        # #server
+        # flow_path = f"/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/optical_flow/flow_{get_idx(self.graph_files[idx]):010d}.npy"
+        # flow = np.load(flow_path).astype(np.float32)  # (2,H,W)
 
-        flow_vec = torch.tensor([
-            np.median(flow[0]),
-            np.median(flow[1])
-        ], dtype=torch.float32)
+        # flow_vec = torch.tensor([
+        #     np.median(flow[0]),
+        #     np.median(flow[1])
+        # ], dtype=torch.float32)
 
 
         if edge_index.shape[0] != 2:
@@ -69,14 +69,14 @@ class MVSECGraphDataset(torch.utils.data.Dataset):
             y=torch.tensor(self.gt[idx], dtype=torch.float32)[None, :]
         )
 
-        data.y_flow = flow_vec  # ok
+        # data.y_flow = flow_vec  # ok
 
         return data
 
 def collate_fn(batch):
     batch = [b for b in batch if b is not None]
     data = Batch.from_data_list(batch)
-    data.y_flow = torch.stack([b.y_flow for b in batch], dim=0)
+    # data.y_flow = torch.stack([b.y_flow for b in batch], dim=0)
 
 
 
@@ -162,7 +162,7 @@ class EgoMotionGNN(nn.Module):
             nn.Linear(hidden, hidden),
             nn.ReLU(),
             nn.Dropout(0.3),
-            nn.Linear(hidden, 3)
+            nn.Linear(hidden, 6)
         )
 
     def forward(self, x, edge_index, edge_attr, batch):
@@ -244,8 +244,8 @@ def main():
     df = pd.read_csv(gt_csv)
     # gt = df[["t_x","t_y","t_z","w_x","w_y","w_z"]].values
     # gt = df[["t_z"]].values
-    # gt = df[["dx","dy","dz","rx","ry","rz"]].values
-    gt = df[["rx","ry","rz"]].values
+    gt = df[["dx","dy","dz","rx","ry","rz"]].values
+    # gt = df[["rx","ry","rz"]].values
     
     # #traslacion solo
     # gt = df[["t_x", "t_y", "t_z"]].values
@@ -403,7 +403,7 @@ def main():
 
             # print("X device after:", data.x.device)
 
-            flow_gt = data.y_flow
+            # flow_gt = data.y_flow
     
             start = time.time()
         
@@ -493,9 +493,9 @@ def main():
             f"tx={mae_real[0]:.4f}",
             f"ty={mae_real[1]:.4f}",
             f"tz={mae_real[2]:.4f}",
-            # f"wx={mae_real[3]:.4f}",
-            # f"wy={mae_real[4]:.4f}",
-            # f"wz={mae_real[5]:.4f}",
+            f"wx={mae_real[3]:.4f}",
+            f"wy={mae_real[4]:.4f}",
+            f"wz={mae_real[5]:.4f}",
         )
                 
                 # =========================
