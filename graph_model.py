@@ -42,6 +42,10 @@ class MVSECGraphDataset(torch.utils.data.Dataset):
         # print(data_np.files)
 
         x = torch.tensor(data_np["feats"], dtype=torch.float32)
+        
+        if x.shape[0] == 0:
+            print("Grafo vacío:", self.graph_files[idx])
+        
         edge_index = torch.tensor(data_np["edge_index"], dtype=torch.long)
         edge_attr = torch.tensor(data_np["edge_attr"], dtype=torch.float32)
 
@@ -66,7 +70,7 @@ class MVSECGraphDataset(torch.utils.data.Dataset):
             x=x,
             edge_index=edge_index,
             edge_attr=edge_attr,
-            y=torch.tensor(self.gt[idx], dtype=torch.float32)[None, :]
+            y=torch.tensor(self.gt[idx], dtype=torch.float32)
         )
 
         # data.y_flow = flow_vec  # ok
@@ -462,6 +466,12 @@ def main():
                 
                 pred_denorm = pred.cpu().numpy() * std + mean
                 gt_denorm = data.y.cpu().numpy() * std + mean
+                
+                print("pred.shape =", pred.shape)
+                print("data.y.shape =", data.y.shape)
+                print("pred_denorm.shape =", pred_denorm.shape)
+                print("gt_denorm.shape =", gt_denorm.shape)
+                print("num_graphs =", data.num_graphs)
                 error_real = np.abs(pred_denorm - gt_denorm)
 
                 component_errors_real.append(error_real)
