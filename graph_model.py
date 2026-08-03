@@ -70,7 +70,7 @@ class MVSECGraphDataset(torch.utils.data.Dataset):
             x=x,
             edge_index=edge_index,
             edge_attr=edge_attr,
-            y=torch.tensor(self.gt[idx], dtype=torch.float32)
+            y=torch.tensor(self.gt[idx], dtype=torch.float32)[None, :]
         )
 
         # data.y_flow = flow_vec  # ok
