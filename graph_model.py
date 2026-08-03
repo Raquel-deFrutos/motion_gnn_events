@@ -267,6 +267,28 @@ def main():
     graph_files = [graph_dict[i] for i in valid_indices]
     gt = gt[valid_indices]
     N = len(graph_files)
+    empty_graphs = []
+
+    for p in graph_files:
+
+        data = np.load(p)
+
+        n_nodes = data["feats"].shape[0]
+        n_edges = data["edge_index"].shape[0]
+
+        if n_nodes == 0:
+            empty_graphs.append(
+                (get_idx(p), n_nodes, n_edges)
+            )
+
+    print(f"Número de grafos vacíos: {len(empty_graphs)}")
+
+    for idx, nodes, edges in empty_graphs[:20]:
+        print(
+            f"frame={idx} | "
+            f"nodos={nodes} | "
+            f"edges={edges}"
+        )
 
     # --------------------------
 
