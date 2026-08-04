@@ -38,28 +38,18 @@ class MVSECGraphDataset(torch.utils.data.Dataset):
 
     def __getitem__(self, idx):
         data_np = np.load(self.graph_files[idx], allow_pickle=True)
-        # print(self.graph_files[idx])
-        # print(data_np.files)
+
 
         x = torch.tensor(data_np["feats"], dtype=torch.float32)
         
+        #grafo vacio
         if x.shape[0] == 0:
-            # print("Grafo vacío:", self.graph_files[idx])
             return None
         
         edge_index = torch.tensor(data_np["edge_index"], dtype=torch.long)
         edge_attr = torch.tensor(data_np["edge_attr"], dtype=torch.float32)
 
-        # ##local
-        # flow_path = f"C:\\Users\\Raquel\\Documents\\Doct\\Algoritmo\\MVSEC\\outdoor_day1\\optical_flow\\flow_{get_idx(self.graph_files[idx]):010d}.npy"
-        # #server
-        # flow_path = f"/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/optical_flow/flow_{get_idx(self.graph_files[idx]):010d}.npy"
-        # flow = np.load(flow_path).astype(np.float32)  # (2,H,W)
 
-        # flow_vec = torch.tensor([
-        #     np.median(flow[0]),
-        #     np.median(flow[1])
-        # ], dtype=torch.float32)
 
 
         if edge_index.shape[0] != 2:
@@ -74,7 +64,6 @@ class MVSECGraphDataset(torch.utils.data.Dataset):
             y=torch.tensor(self.gt[idx], dtype=torch.float32)[None, :]
         )
 
-        # data.y_flow = flow_vec  # ok
 
         return data
 
@@ -110,7 +99,6 @@ class SimpleGNNLayer(MessagePassing):
         )
         self.bn = nn.BatchNorm1d(hidden)
 
-        # 👇 PROYECCIÓN para residual
         self.res_proj = nn.Linear(node_dim, hidden) if node_dim != hidden else nn.Identity()
 
         self.dropout = nn.Dropout(0.1)
@@ -237,12 +225,6 @@ def main():
     gt_csv = "/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/gt/gt_aligned_woInterp_PoseRe.csv"
     # gt_csv = "/home/rdefrutos/motion_gnn_events/data/MVSEC_indoorflying1/gt/gt_aligned_woInterp_PoseRe.csv"
     
-    
-    # print("tz min:", gt[:, 0].min())
-    # print("tz max:", gt[:, 0].max())
-    # print("tz mean:", gt[:, 0].mean())
-    # print("tz std:", gt[:, 0].std())
-        
 
 
 
