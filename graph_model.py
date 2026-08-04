@@ -527,7 +527,7 @@ def main():
         mae_real = component_errors_real.mean(axis=0)
 
         print(
-            "MAE real:",
+            # "MAE real:",
             # f"tx={mae_real[0]:.4f}",
             # f"ty={mae_real[1]:.4f}",
             # f"tz={mae_real[2]:.4f}",
