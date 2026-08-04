@@ -528,12 +528,12 @@ def main():
 
         print(
             # "MAE real:",
-            # f"tx={mae_real[0]:.4f}",
-            # f"ty={mae_real[1]:.4f}",
-            # f"tz={mae_real[2]:.4f}",
-            f"wx={mae_real[3]:.4f}",
-            f"wy={mae_real[4]:.4f}",
-            f"wz={mae_real[5]:.4f}",
+            f"tx={mae_real[0]:.4f}",
+            f"ty={mae_real[1]:.4f}",
+            f"tz={mae_real[2]:.4f}",
+            # f"wx={mae_real[3]:.4f}",
+            # f"wy={mae_real[4]:.4f}",
+            # f"wz={mae_real[5]:.4f}",
         )
                 
                 # =========================
