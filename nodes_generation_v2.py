@@ -218,7 +218,7 @@ def events_to_voxel_grid(events, num_bins, height, width):
 # ==========================================================
 # NODES
 # ==========================================================
-def build_nodes(events, H, W, cell_size=16):
+def build_nodes(events, H, W, cell_size=4):
 
     """
     events: (N,4) -> x,y,p,t
@@ -465,7 +465,7 @@ def build_graph(coords, k=8, alpha_t=2.0):
 
 def generate_nodes():
     NODE_FEAT_DIM = 19
-    node_dir = EVENTS_OUT_DIR / "nodesPose16"
+    node_dir = EVENTS_OUT_DIR / "nodesPose4"
     node_dir.mkdir(parents=True, exist_ok=True)
     # depth_dir = Path(r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\mvsec_outdoor_day_1_20Hz\mvsec_outdoor_day_1_20Hz\outdoor_day_1\depth_rectified")
 
@@ -517,7 +517,7 @@ def generate_nodes():
             # depth,
             H,
             W,
-            cell_size=16
+            cell_size=4
         )
 
         feats = np.concatenate([feats, coords], axis=1)
