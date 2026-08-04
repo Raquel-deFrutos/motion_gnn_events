@@ -212,7 +212,8 @@ def main():
     #nodes1
     # graph_dir ="/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/nodes/nodes/*.npz"
     #nodes2
-    graph_dir ="/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/nodesPose/*.npz"
+    # graph_dir ="/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/nodesPose/*.npz"
+    graph_dir ="/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/nodesPose16/*.npz"
     
     # graph_dir ="/home/rdefrutos/motion_gnn_events/data/MVSEC_indoorflying1/nodesPose/nodesPose/*.npz"
     graph_files_raw = glob.glob(graph_dir)
