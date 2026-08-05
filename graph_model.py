@@ -401,6 +401,8 @@ def main():
     EPOCHS = 30
 
     best_val = float("inf") 
+    best_train = float("inf")
+    best_epoch = -1
 
     for epoch in range(EPOCHS):
         model.train()
@@ -574,12 +576,21 @@ def main():
         
         if val_loss < best_val:
             best_val = val_loss
+            best_train = train_loss
+            best_epoch = epoch
             torch.save({
                 "model_state_dict": model.state_dict(),
                 "mean": mean,
                 "std": std
             }, "best_model.pth")
             print(">> Guardado nuevo mejor modelo")
+    
+
+
+    print("\n===== RESULTADO FINAL =====")
+    print(f"Mejor train loss: {best_train:.4f}")
+    print(f"Mejor val loss:   {best_val:.4f}")
+    print(f"Mejor época:      {best_epoch}")
 
 
 if __name__ == "__main__":
