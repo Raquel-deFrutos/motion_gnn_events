@@ -309,69 +309,69 @@ def main():
     # # # --------------------------
     # # # OVERFIT TEST
     # # # --------------------------
-    # small_N = 20
-
-    # train_dataset = MVSECGraphDataset(
-    #     graph_files[:small_N],
-    #     gt_norm[:small_N]
-    # )
-
-    # val_dataset = train_dataset
-
+    small_N = 20
 
     train_dataset = MVSECGraphDataset(
-        graph_files[:split],
-        gt_norm[:split]
+        graph_files[:small_N],
+        gt_norm[:small_N]
     )
 
-    val_dataset = MVSECGraphDataset(
-        graph_files[split:],
-        gt_norm[split:]
-    )
-    
-
-    _ = train_dataset[0]
+    val_dataset = train_dataset
 
 
-    train_loader = DataLoader(
-    train_dataset,
-    batch_size=16,
-    shuffle=True,
-    collate_fn=collate_fn,
-    num_workers=0,   # ya correcto
-    )
-
-
-    # val_loader = DataLoader(
-    #     val_dataset,
-    #     batch_size=16,
-    #     shuffle=False,
-    #     collate_fn=collate_fn,
-    #     num_workers=2,
-    #     pin_memory=False
+    # train_dataset = MVSECGraphDataset(
+    #     graph_files[:split],
+    #     gt_norm[:split]
     # )
-    val_loader = DataLoader(
-    val_dataset,
-    batch_size=16,
-    shuffle=False,
-    collate_fn=collate_fn,
-    num_workers=0,   # cámbialo a 0 también
-    )
+
+    # val_dataset = MVSECGraphDataset(
+    #     graph_files[split:],
+    #     gt_norm[split:]
+    # )
     
+
+    # _ = train_dataset[0]
+
+
+    # train_loader = DataLoader(
+    # train_dataset,
+    # batch_size=16,
+    # shuffle=True,
+    # collate_fn=collate_fn,
+    # num_workers=0,   # ya correcto
+    # )
+
+
+    # # val_loader = DataLoader(
+    # #     val_dataset,
+    # #     batch_size=16,
+    # #     shuffle=False,
+    # #     collate_fn=collate_fn,
+    # #     num_workers=2,
+    # #     pin_memory=False
+    # # )
+    # val_loader = DataLoader(
+    # val_dataset,
+    # batch_size=16,
+    # shuffle=False,
+    # collate_fn=collate_fn,
+    # num_workers=0,   # cámbialo a 0 también
+    # )
     
-    data = next(iter(train_loader))
-    # print("Número de nodos:", data.x.shape[0])
-    # print("Número de grafos:", data.num_graphs)
-    # print("Nodos por grafo:")
-
-    for g in range(data.num_graphs):
-        n = (data.batch == g).sum().item()
-        print(f"Grafo {g}: {n} nodos")
-
-
     
     # data = next(iter(train_loader))
-    # print("FIRST BATCH OK")
+    # # print("Número de nodos:", data.x.shape[0])
+    # # print("Número de grafos:", data.num_graphs)
+    # # print("Nodos por grafo:")
+
+    # for g in range(data.num_graphs):
+    #     n = (data.batch == g).sum().item()
+    #     print(f"Grafo {g}: {n} nodos")
+
+
+    
+    # # data = next(iter(train_loader))
+    # # print("FIRST BATCH OK")
 
     # --------------------------
     # MODEL
