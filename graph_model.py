@@ -459,7 +459,8 @@ def main():
         with torch.no_grad():
 
             component_errors = []
-            component_errors_real = []   # <-- AÑADE ESTO
+            component_errors_real = []  
+            rmse_errors = [] 
 
             for i, data in enumerate(val_loader):
 
@@ -486,6 +487,10 @@ def main():
                 error_real = np.abs(pred_denorm - gt_denorm)
 
                 component_errors_real.append(error_real)
+                
+                sq_error = (pred_denorm - gt_denorm) ** 2
+
+                rmse_errors.append(sq_error)
 
                 # =========================
                 # ERROR POR COMPONENTE
@@ -508,17 +513,33 @@ def main():
         )
 
         mae_real = component_errors_real.mean(axis=0)
+        rmse_errors = np.concatenate(rmse_errors, axis=0)
 
-        print(
-            # "MAE real:",
-            f"tx={mae_real[0]:.4f}",
-            f"ty={mae_real[1]:.4f}",
-            f"tz={mae_real[2]:.4f}",
-            # f"wx={mae_real[3]:.4f}",
-            # f"wy={mae_real[4]:.4f}",
-            # f"wz={mae_real[5]:.4f}",
+        rmse_components = np.sqrt(
+            rmse_errors.mean(axis=0)
         )
-                
+
+        rmse_global = np.sqrt(
+            np.sum(rmse_errors, axis=1).mean()
+        )
+
+        # print(
+        #     # "MAE real:",
+        #     f"tx={mae_real[0]:.4f}",
+        #     f"ty={mae_real[1]:.4f}",
+        #     f"tz={mae_real[2]:.4f}",
+        #     # f"wx={mae_real[3]:.4f}",
+        #     # f"wy={mae_real[4]:.4f}",
+        #     # f"wz={mae_real[5]:.4f}",
+        # )
+        
+        print(
+            f"RMSE rx={rmse_components[0]:.4f}",
+            f"ry={rmse_components[1]:.4f}",
+            f"rz={rmse_components[2]:.4f}",
+            f"| RMSE global={rmse_global:.4f}"
+        )
+                        
                 # =========================
         # MAE POR COMPONENTE
         # =========================
