@@ -227,7 +227,7 @@ def build_nodes(events, H, W, cell_size=4):
         coords: (M, 3)  -> x,y,t
     """
     if len(events) == 0:
-        return np.zeros((0, 18), dtype=np.float32), np.zeros((0, 3), dtype=np.float32)
+        return np.zeros((0, 23), dtype=np.float32), np.zeros((0, 3), dtype=np.float32)
     
     xs = events[:, 0].astype(np.float32)
     ys = events[:, 1].astype(np.float32)
@@ -276,6 +276,12 @@ def build_nodes(events, H, W, cell_size=4):
 
         x_mean = (xs[idxs].mean() / W) * 2 - 1
         y_mean = (ys[idxs].mean() / H) * 2 - 1
+        r = np.sqrt(x_mean**2 + y_mean**2) / np.sqrt(2)
+
+        theta = np.arctan2(y_mean, x_mean)
+
+        cos_theta = np.cos(theta)
+        sin_theta = np.sin(theta)
         x_std = xs[idxs].std() / W
         y_std = ys[idxs].std() / H
 
@@ -310,9 +316,16 @@ def build_nodes(events, H, W, cell_size=4):
             # normalización
             vx = np.tanh(vx * dt_local / W)
             vy = np.tanh(vy * dt_local / H)
+            vr = vx * cos_theta + vy * sin_theta
+
+            vt = -vx * sin_theta + vy * cos_theta
+            vr = np.tanh(vr)
+            vt = np.tanh(vt)
         else:
             vx = 0.0
             vy = 0.0
+            vr = 0.0
+            vt = 0.0
 
         # dt = (ts_c[-1] - ts_c[0]) + 1e-6
 
@@ -346,22 +359,32 @@ def build_nodes(events, H, W, cell_size=4):
         node_feat = [
             num_events_norm,
             t_std,
+
             x_std,
             y_std,
+
             cov_xy,
             cov_xt,
             cov_yt,
+
             hist[0],
             hist[1],
             hist[2],
+
             dt_cell,
             event_rate,
+
             pos_ratio,
             pol_mean,
+
             vx,
             vy,
-            # depth_mean,
-            # depth_std
+
+            r,
+            cos_theta,
+            sin_theta,
+            vr,
+            vt
         ]
 
         feats.append(node_feat)
@@ -464,8 +487,8 @@ def build_graph(coords, k=8, alpha_t=2.0):
     
 
 def generate_nodes():
-    NODE_FEAT_DIM = 19
-    node_dir = EVENTS_OUT_DIR / "nodesPose4"
+    NODE_FEAT_DIM = 24
+    node_dir = EVENTS_OUT_DIR / "nodesPose8_v2"
     node_dir.mkdir(parents=True, exist_ok=True)
     # depth_dir = Path(r"C:\Users\Raquel\Documents\Doct\Algoritmo\MVSEC\mvsec_outdoor_day_1_20Hz\mvsec_outdoor_day_1_20Hz\outdoor_day_1\depth_rectified")
 

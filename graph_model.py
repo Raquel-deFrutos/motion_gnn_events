@@ -128,7 +128,7 @@ from torch_geometric.nn import GlobalAttention, MessagePassing
 class EgoMotionGNN(nn.Module):
     # def __init__(self, node_dim=10, edge_dim=6, hidden=64):
     ##nodes2
-    def __init__(self, node_dim=19, edge_dim=9, hidden=64):
+    def __init__(self, node_dim=24, edge_dim=9, hidden=64):
         super().__init__()
 
         self.gnn1 = SimpleGNNLayer(node_dim, edge_dim, hidden)
@@ -213,7 +213,7 @@ def main():
     # graph_dir ="/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/nodes/nodes/*.npz"
     #nodes2
     # graph_dir ="/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/nodesPose/*.npz"
-    graph_dir ="/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/nodesPose8clustering/nodesPose8clustering/*.npz"
+    graph_dir ="/home/rdefrutos/motion_gnn_events/data/MVSEC_outdoorday1/nodesPose8_v2/nodesPose8_v2/*.npz"
     
     # graph_dir ="/home/rdefrutos/motion_gnn_events/data/MVSEC_indoorflying1/nodesPose/nodesPose/*.npz"
     graph_files_raw = glob.glob(graph_dir)
