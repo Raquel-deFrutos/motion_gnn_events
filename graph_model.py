@@ -133,7 +133,7 @@ class EgoMotionGNN(nn.Module):
 
         self.gnn1 = SimpleGNNLayer(node_dim, edge_dim, hidden)
         self.gnn2 = SimpleGNNLayer(hidden, edge_dim, hidden)
-        self.gnn3 = SimpleGNNLayer(hidden, edge_dim, hidden)
+        # self.gnn3 = SimpleGNNLayer(hidden, edge_dim, hidden)
 
         # Attention pooling sobre nodos del grafo
         self.pool = AttentionalAggregation(
