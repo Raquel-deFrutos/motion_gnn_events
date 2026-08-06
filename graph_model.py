@@ -165,7 +165,7 @@ class EgoMotionGNN(nn.Module):
     def forward(self, x, edge_index, edge_attr, batch):
         x = self.gnn1(x, edge_index, edge_attr)
         x = self.gnn2(x, edge_index, edge_attr)
-        x = self.gnn3(x, edge_index, edge_attr)
+        # x = self.gnn3(x, edge_index, edge_attr)
 
         # pooling con atención (en vez de mean pooling)
         x = self.pool(x, batch)
